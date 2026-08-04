@@ -1,12 +1,12 @@
 # ============================================================
 #  main.py — Point d'entrée
-#  rolax1212 v2.0.1 by Roland
+#  rolax1212 v4.0.0 by Roland
 # ============================================================
 
 import sys
 from pathlib import Path
 from .ui    import console, banniere, separateur
-from .llm   import choisir_modele
+from .llm   import choisir_provider_et_modele
 from .agent import lancer
 
 
@@ -15,7 +15,7 @@ def main():
     separateur()
 
     try:
-        modele = choisir_modele()
+        provider, modele = choisir_provider_et_modele()
     except SystemExit:
         sys.exit(1)
 

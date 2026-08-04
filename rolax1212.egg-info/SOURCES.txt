@@ -4,6 +4,7 @@ setup.py
 rolax1212/__init__.py
 rolax1212/agent.py
 rolax1212/audit.py
+rolax1212/config.py
 rolax1212/frameworks.py
 rolax1212/generateur.py
 rolax1212/git_manager.py

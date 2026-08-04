@@ -13,7 +13,7 @@ from rich.text     import Text
 
 console = Console()
 
-VERSION = "3.0.0"
+VERSION = "4.0.0"
 AUTEUR  = "Roland"
 
 # ── ASCII Art — ROLAX1212 style pixel bloc ───────────────────
@@ -122,8 +122,15 @@ def afficher_aide():
 | `lis [fichier]` | Affiche un fichier |
 | `exec [fichier]` | Exécute un fichier |
 | `framework` | Changer de framework |
+| `provider` | Changer de provider LLM (Ollama/Groq/Gemini…) |
+| `config` | Afficher la configuration et les clés API |
+| `cle <provider> <valeur>` | Sauvegarder une clé API |
+| `cle <provider> supprimer` | Supprimer une clé API |
 | `aide` | Cette aide |
 | `exit` | Quitter |
+
+## Providers supportés
+Ollama (local) • Groq • Gemini • Claude • DeepSeek • OpenAI
 
 ## Frameworks supportés
 Django • FastAPI • Flask • Laravel • Symfony • Spring Boot
@@ -135,6 +142,8 @@ React Native • Flutter
 plan je veux un site de gestion d'élèves avec Django
 init django
 crée un UserController.php avec login et register
+provider
+cle groq gsk_xxxxxxxxxxxx
 git
 ```
 """))

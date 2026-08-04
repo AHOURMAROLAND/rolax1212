@@ -15,6 +15,7 @@ from .generateur  import traiter, executer_tasks
 from .frameworks  import detecter_framework, confirmer_framework, init_framework, choisir_framework, FRAMEWORKS
 from .logger      import verifier_reprise
 from .git_manager import commit_auto, init_git, afficher_statut, historique_git, push, commit_message_libre
+from .config      import afficher_config, set_cle, supprimer_cle
 
 
 def lancer(modele, path_str):
@@ -162,6 +163,33 @@ def _router(commande, path, modele, fichiers, historique, framework, logger):
 
     if cmd in ["git init"]:
         init_git(path)
+        return
+
+    # ── Config / clés API ──
+    if cmd in ["config", "configuration", "cles", "clés"]:
+        afficher_config()
+        return
+
+    if cmd.startswith("cle ") or cmd.startswith("clé "):
+        # cle groq sk-...   ou   cle groq supprimer
+        parties = commande.split()
+        if len(parties) >= 3:
+            provider_id = parties[1].lower()
+            valeur      = parties[2]
+            if valeur.lower() in ["del", "delete", "supprimer", "remove"]:
+                supprimer_cle(provider_id)
+                ok(f"Clé {provider_id} supprimée.")
+            else:
+                set_cle(provider_id, valeur)
+                ok(f"Clé {provider_id} sauvegardée.")
+        else:
+            warn("Usage : cle <provider> <valeur>  ou  cle <provider> supprimer")
+        return
+
+    # ── Changer provider ──
+    if cmd in ["provider", "fournisseur", "connexion"]:
+        from .llm import choisir_provider_et_modele
+        choisir_provider_et_modele()
         return
 
     if cmd.startswith("commit "):
