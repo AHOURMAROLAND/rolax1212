@@ -5,14 +5,18 @@
 
 import sys
 from pathlib import Path
-from .ui    import console, banniere, separateur
-from .llm   import choisir_provider_et_modele
-from .agent import lancer
+from .ui     import console, banniere, separateur
+from .llm    import choisir_provider_et_modele
+from .config import setup_initial
+from .agent  import lancer
 
 
 def main():
     banniere()
     separateur()
+
+    # Premier lancement → assistant configuration variables système
+    setup_initial()
 
     try:
         provider, modele = choisir_provider_et_modele()

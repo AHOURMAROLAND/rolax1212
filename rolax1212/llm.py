@@ -4,9 +4,10 @@
 # ============================================================
 
 import json
+import os
 import requests
 from .ui     import console, ok, info, warn, err
-from .config import charger_config, sauvegarder_config
+from .config import charger_config, sauvegarder_config, get_cle, set_cle, ENV_VARS
 
 # ── URLs ────────────────────────────────────────────────────
 OLLAMA_URL  = "http://localhost:11434/api/chat"
@@ -144,23 +145,27 @@ def choisir_provider_et_modele():
 
     # ── Clé API ──────────────────────────────────────────────
     if provider["cle"]:
-        cle_api = config.get("cles", {}).get(provider_cle, "")
+        cle_api = get_cle(provider_cle)
         if not cle_api:
+            var_sys = ENV_VARS.get(provider_cle, "")
             console.print(f"\n[yellow]Clé API {provider['nom']} requise.[/yellow]")
+            if var_sys:
+                console.print(f"[dim]Tu peux aussi définir la variable système : {var_sys}[/dim]")
             cle_api = console.input(f"[cyan]Entre ta clé API : [/cyan]").strip()
             if not cle_api:
                 err("Clé vide — abandon.")
                 raise SystemExit(1)
-            # Sauvegarde
-            if "cles" not in config:
-                config["cles"] = {}
-            config["cles"][provider_cle] = cle_api
-            sauvegarder_config(config)
-            ok("Clé sauvegardée dans ~/.rolax1212/config.json")
+            # Sauvegarde dans variables système + config.json
+            from .config import ecrire_cles_systeme
+            ecrire_cles_systeme(provider_cle, cle_api)
+            set_cle(provider_cle, cle_api)
+            ok("Clé sauvegardée en variable système et config.json")
         else:
-            # Masque la clé affichée
             masque = cle_api[:6] + "..." + cle_api[-4:]
-            ok(f"Clé API chargée : [dim]{masque}[/dim]")
+            # Indique la source
+            var_sys = ENV_VARS.get(provider_cle, "")
+            source  = f"[dim](var. système {var_sys})[/dim]" if os.environ.get(var_sys) else "[dim](config.json)[/dim]"
+            ok(f"Clé API chargée : [dim]{masque}[/dim]  {source}")
     else:
         # Ollama — vérifie la connexion
         info("Connexion à Ollama...")

@@ -16,6 +16,7 @@ from .frameworks  import detecter_framework, confirmer_framework, init_framework
 from .logger      import verifier_reprise
 from .git_manager import commit_auto, init_git, afficher_statut, historique_git, push, commit_message_libre
 from .config      import afficher_config, set_cle, supprimer_cle
+from .env_manager import configurer_env, verifier_env_silencieux
 
 
 def lancer(modele, path_str):
@@ -44,6 +45,13 @@ def lancer(modele, path_str):
             framework = "aucun"
 
     historique = []
+
+    # ── Vérification variables d'environnement ───────────────
+    if fichiers:
+        env_ok = verifier_env_silencieux(path, framework)
+        if not env_ok:
+            if confirmer("Configurer le .env maintenant ?", defaut=True):
+                configurer_env(path, framework)
 
     # ── Vérification reprise session ─────────────────────────
     logger, reprise = verifier_reprise(path)
@@ -165,9 +173,19 @@ def _router(commande, path, modele, fichiers, historique, framework, logger):
         init_git(path)
         return
 
+    # ── Env ──
+    if cmd in ["env", ".env", "variables", "environnement"]:
+        configurer_env(path, framework, force=True)
+        return
+
     # ── Config / clés API ──
     if cmd in ["config", "configuration", "cles", "clés"]:
         afficher_config()
+        return
+
+    if cmd in ["config setup", "setup"]:
+        from .config import _assistant_configuration, charger_config
+        _assistant_configuration(charger_config())
         return
 
     if cmd.startswith("cle ") or cmd.startswith("clé "):

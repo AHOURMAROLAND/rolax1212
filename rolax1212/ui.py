@@ -13,7 +13,7 @@ from rich.text     import Text
 
 console = Console()
 
-VERSION = "4.0.0"
+VERSION = "4.2.0"
 AUTEUR  = "Roland"
 
 # ── ASCII Art — ROLAX1212 style pixel bloc ───────────────────
@@ -122,6 +122,7 @@ def afficher_aide():
 | `lis [fichier]` | Affiche un fichier |
 | `exec [fichier]` | Exécute un fichier |
 | `framework` | Changer de framework |
+| `env` | Configurer les variables d'environnement (.env) |
 | `provider` | Changer de provider LLM (Ollama/Groq/Gemini…) |
 | `config` | Afficher la configuration et les clés API |
 | `cle <provider> <valeur>` | Sauvegarder une clé API |
