@@ -1,6 +1,6 @@
 # ============================================================
 #  ui.py — Affichage terminal
-#  rolax1212 v2.0.1 by Roland
+#  rolax1212 v2.0.6 by Roland
 # ============================================================
 
 from rich.console  import Console
@@ -9,11 +9,58 @@ from rich.table    import Table
 from rich.syntax   import Syntax
 from rich.prompt   import Prompt, Confirm
 from rich.markdown import Markdown
+from rich.text     import Text
 
 console = Console()
 
 VERSION = "2.0.6"
 AUTEUR  = "Roland"
+
+# ── ASCII Art — ROLAX1212 style pixel bloc ───────────────────
+# Lignes du logo : partie gauche (ROLAX) en bleu, droite (1212) en cyan
+_LOGO = [
+    (" ██████╗  ██████╗ ██╗      █████╗ ██╗  ██╗",  "  ██╗██████╗  ██╗██████╗ "),
+    (" ██╔══██╗██╔═══██╗██║     ██╔══██╗╚██╗██╔╝",  "  ██║╚════██╗███║╚════██╗"),
+    (" ██████╔╝██║   ██║██║     ███████║ ╚███╔╝ ",  "  ██║ █████╔╝╚██║ █████╔╝"),
+    (" ██╔══██╗██║   ██║██║     ██╔══██║ ██╔██╗ ",  "  ██║██╔═══╝  ██║██╔═══╝ "),
+    (" ██║  ██║╚██████╔╝███████╗██║  ██║██╔╝ ██╗",  "  ██║███████╗ ██║███████╗"),
+    (" ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝", "  ╚═╝╚══════╝ ╚═╝╚══════╝"),
+]
+
+# Chevron style image : > en dégradé bleu→magenta
+_CHEVRON = [
+    ("  ██╗  ",  "blue"),
+    (" ██╔╝  ",  "blue"),
+    (" ╚██╗  ",  "magenta"),
+    ("  ╚═╝  ",  "blue"),
+]
+
+
+def _print_banniere_ascii():
+    """Affiche le header ASCII art style image (chevron + ROLAX1212)."""
+    console.print()
+
+    # On aligne chevron (4 lignes) avec logo (6 lignes) — padding haut de 1
+    chevron_pad = 1  # décalage vertical pour centrer le chevron (4 lignes) sur 6
+
+    for i, (left, right) in enumerate(_LOGO):
+        t = Text()
+
+        # Chevron sur lignes 1-4 (index 1 à 4)
+        chev_idx = i - chevron_pad
+        if 0 <= chev_idx < len(_CHEVRON):
+            chev_txt, chev_color = _CHEVRON[chev_idx]
+            t.append(chev_txt, style=f"bold {chev_color}")
+        else:
+            t.append("        ")  # 8 espaces de padding
+
+        # ROLAX en bleu, 1212 en cyan
+        t.append(left,  style="bold blue")
+        t.append(right, style="bold cyan")
+        console.print(t)
+
+    console.print()
+
 
 # ── Couleurs ────────────────────────────────────────────────
 def ok(t):    console.print(f"[bold green][OK][/bold green] {t}")
@@ -34,23 +81,25 @@ def confirmer(question, defaut=True):
 
 # ── Bannières ───────────────────────────────────────────────
 def banniere():
-    console.print(Panel(
-        f"[bold cyan]ROLAX1212[/bold cyan]  —  Agent de développement local\n"
-        f"[dim]Version {VERSION}  •  by {AUTEUR}  •  Powered by Ollama[/dim]",
-        title="[bold cyan][ ROLAX1212 ][/bold cyan]",
-        style="cyan"
-    ))
+    _print_banniere_ascii()
+    console.print(
+        f"  [dim]v{VERSION}  •  by {AUTEUR}  •  Powered by Ollama  •  "
+        f"[cyan]plan[/cyan] [dim]|[/dim] [cyan]task[/cyan] [dim]|[/dim] "
+        f"[cyan]audit[/cyan] [dim]|[/dim] [cyan]git[/cyan] [dim]|[/dim] "
+        f"[cyan]aide[/cyan][/dim]"
+    )
+    console.print()
 
 def banniere_session(modele, path_projet):
+    _print_banniere_ascii()
     console.print(Panel(
-        f"[bold cyan]ROLAX1212[/bold cyan]  —  Agent de développement local\n"
         f"[dim]Modèle  :[/dim] [yellow]{modele}[/yellow]\n"
         f"[dim]Projet  :[/dim] [white]{path_projet}[/white]\n"
         f"[dim]Commandes :[/dim] "
         f"[cyan]plan[/cyan] • [cyan]task[/cyan] • [cyan]audit[/cyan] • "
         f"[cyan]init[/cyan] • [cyan]git[/cyan] • [cyan]structure[/cyan] • "
         f"[cyan]aide[/cyan] • [cyan]exit[/cyan]",
-        title="[bold cyan][ ROLAX1212 v2.0.6 ][/bold cyan]",
+        title=f"[bold cyan][ ROLAX1212 v{VERSION} ][/bold cyan]",
         style="cyan"
     ))
 
