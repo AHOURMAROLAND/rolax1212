@@ -1,3 +1,3 @@
-# rolax1212 v2.0.6 by Roland
-__version__ = "2.0.6"
+# rolax1212 v3.0.0 by Roland
+__version__ = "3.0.0"
 __author__  = "Roland"

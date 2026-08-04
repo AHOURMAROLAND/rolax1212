@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rolax1212",
-    version="2.0.6",
+    version="3.0.0",
     author="Roland",
     description="Agent de developpement local - style Claude Code, powered by Ollama + Groq",
     long_description=open("README.md", encoding="utf-8").read(),

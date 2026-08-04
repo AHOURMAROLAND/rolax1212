@@ -13,7 +13,7 @@ from rich.text     import Text
 
 console = Console()
 
-VERSION = "2.0.6"
+VERSION = "3.0.0"
 AUTEUR  = "Roland"
 
 # ── ASCII Art — ROLAX1212 style pixel bloc ───────────────────

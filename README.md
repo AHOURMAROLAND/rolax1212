@@ -1,4 +1,4 @@
-# rolax1212 v1.0
+# rolax1212 v3.0.0
 
 Agent de développement local — style Claude Code, powered by Ollama.
 
@@ -39,11 +39,27 @@ rolax1212 C:\Users\rolan\MonProjet
 | `plan [texte libre]` | Décris ton projet → génère Task.md automatiquement |
 | `task` | Exécute toutes les tâches du Task.md |
 | `audit` | Rapport C/U/F (bugs, améliorations, suggestions) |
+| `init [framework]` | Initialise un projet (Django, Laravel, React…) |
+| `git` | Commit automatique avec message généré par IA |
+| `git status` | Fichiers modifiés |
+| `git log` | Derniers commits |
+| `git push` | Push vers GitHub |
 | `structure` | Affiche l'arborescence du projet |
 | `lis [fichier]` | Affiche un fichier avec coloration syntaxique |
 | `exec [fichier]` | Exécute un fichier (Python, PHP, JS, Bash) |
+| `framework` | Changer de framework en cours de session |
 | `aide` | Affiche l'aide |
 | `exit` | Quitte rolax1212 |
+
+---
+
+## Nouveautés v3.0.0
+
+- **Header ASCII art** — logo ROLAX1212 pixel style avec chevron bleu/magenta au démarrage
+- **Détection framework par IA** — le LLM analyse le projet et identifie le framework automatiquement
+- **Ctrl+C sécurisé** — demande confirmation avant de quitter
+- **14 frameworks supportés** — Django, FastAPI, Flask, Laravel, Symfony, Spring Boot, Express, NestJS, React, Next.js, Vue, Angular, React Native, Flutter
+- **Reprise de session** — reprend automatiquement après un crash ou interruption
 
 ---
 
@@ -71,7 +87,13 @@ crée un UserController.php avec login et register
 génère une classe Java User avec getters et setters
 implémente une API REST avec Flask
 ```
-Le code est vérifié automatiquement après génération.
+Le code est vérifié et corrigé automatiquement après génération (3 tentatives max).
+
+### Git intelligent
+```
+git
+```
+Analyse les fichiers modifiés, génère un message de commit conventionnel via le LLM et confirme avant de committer.
 
 ---
 
@@ -81,13 +103,20 @@ Le code est vérifié automatiquement après génération.
 |---|---|
 | `qwen2.5:1.5b` | Conversation, questions rapides |
 | `qwen2.5:7b` | Code de qualité |
-| `gpt-oss:120b-cloud` | PHP/Java complexe, Laravel |
+| `llama3:8b` | Polyvalent |
+| `mistral:7b` | PHP/Python complexe |
 
 ---
 
+## Frameworks supportés
+
+Django • FastAPI • Flask • Laravel • Symfony • Spring Boot  
+Express.js • NestJS • React • Next.js • Vue.js • Angular  
+React Native • Flutter
+
 ## Langages supportés
 
-PHP, Python, Java, JavaScript, TypeScript, HTML, CSS, SQL, Bash, C, C++
+PHP • Python • Java • JavaScript • TypeScript • HTML • CSS • SQL • Bash • C • C++ • Dart
 
 ---
 
