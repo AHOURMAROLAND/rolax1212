@@ -84,7 +84,13 @@ def lancer(modele, path_str):
                 continue
             _router(commande, path, modele, fichiers, historique, framework, logger)
         except KeyboardInterrupt:
-            console.print("\n\n[bold cyan]Ctrl+C — tape 'exit' pour quitter.[/bold cyan]")
+            console.print("\n")
+            if confirmer("Quitter rolax1212 ?", defaut=False):
+                logger.session_fin()
+                console.print("\n[bold cyan]rolax1212 — À bientôt ![/bold cyan]\n")
+                sys.exit(0)
+            else:
+                console.print("[dim]Reprise...[/dim]")
         except EOFError:
             break
 

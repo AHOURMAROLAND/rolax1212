@@ -218,15 +218,32 @@ FRAMEWORKS = {
 
 
 # ============================================================
-#  DETECTION — basée sur fichiers signatures uniquement
+#  DETECTION — analyse IA du projet
 # ============================================================
 def detecter_framework(path, fichiers):
     """
-    Détection fiable basée sur des fichiers signatures uniques.
-    Ne détecte rien si pas de preuve concrète.
+    Détection par analyse IA : envoie la liste des fichiers + extraits
+    au LLM pour identifier le framework utilisé.
+    Fallback sur signatures si pas de LLM disponible.
     """
-    noms = [n.lower().replace("\\", "/") for n in fichiers.keys()]
+    if not fichiers:
+        return None
 
+    # Tentative détection IA
+    try:
+        from .llm import demander as llm_demander, ollama_actif
+        if ollama_actif():
+            return _detecter_par_ia(fichiers)
+    except Exception:
+        pass
+
+    # Fallback : signatures fichiers
+    return _detecter_par_signatures(fichiers)
+
+
+def _detecter_par_signatures(fichiers):
+    """Méthode classique — fichiers signatures uniques."""
+    noms = [n.lower().replace("\\", "/") for n in fichiers.keys()]
     for cle, fw in FRAMEWORKS.items():
         if cle == "aucun":
             continue
@@ -234,8 +251,78 @@ def detecter_framework(path, fichiers):
             sig_lower = sig.lower()
             if any(n == sig_lower or n.endswith("/" + sig_lower) for n in noms):
                 return cle
+    return None
 
-    return None  # Aucune signature trouvée → pas de détection
+
+def _detecter_par_ia(fichiers):
+    """
+    Analyse IA : envoie structure + extraits courts au LLM.
+    Retourne la clé du framework détecté ou None.
+    """
+    from .llm import demander as llm_demander
+
+    # Catalogue des frameworks connus
+    liste_fw = ", ".join(
+        f"{cle} ({fw['nom']} - {fw['langage']})"
+        for cle, fw in FRAMEWORKS.items()
+        if cle != "aucun"
+    )
+
+    # Structure des fichiers
+    structure = "\n".join(f"  - {f}" for f in list(fichiers.keys())[:40])
+
+    # Extraits courts des fichiers clés (max 300 chars chacun)
+    extraits = []
+    for nom, contenu in list(fichiers.items())[:10]:
+        extrait = contenu[:300].replace("\n", " ")
+        extraits.append(f"{nom}: {extrait}")
+    extraits_str = "\n".join(extraits)
+
+    prompt = f"""Analyse ce projet et identifie le framework utilisé.
+
+FICHIERS DU PROJET :
+{structure}
+
+EXTRAITS DE CODE :
+{extraits_str}
+
+FRAMEWORKS POSSIBLES :
+{liste_fw}
+
+Réponds UNIQUEMENT avec la clé exacte du framework (ex: django, laravel, react, flask...).
+Si aucun framework n'est clairement identifiable, réponds: aucun
+Pas d'explication, juste le mot-clé."""
+
+    reponse = llm_demander(
+        [{"role": "user", "content": prompt}],
+        _get_modele_actif(),
+        stream=False,
+        timeout=30
+    )
+
+    if not reponse:
+        return _detecter_par_signatures(fichiers)
+
+    cle = reponse.strip().lower().split()[0].rstrip(".,;:")
+    if cle in FRAMEWORKS and cle != "aucun":
+        return cle
+
+    # Le LLM a peut-être répondu "react native" → normalise
+    for k in FRAMEWORKS:
+        if k in cle or cle in k:
+            return k if k != "aucun" else None
+
+    return _detecter_par_signatures(fichiers)
+
+
+def _get_modele_actif():
+    """Récupère le premier modèle disponible sur Ollama."""
+    try:
+        from .llm import lister_modeles
+        modeles = lister_modeles()
+        return modeles[0] if modeles else "qwen2.5:1.5b"
+    except Exception:
+        return "qwen2.5:1.5b"
 
 
 # ============================================================

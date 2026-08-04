@@ -12,7 +12,7 @@ from rich.markdown import Markdown
 
 console = Console()
 
-VERSION = "2.0.1"
+VERSION = "2.0.6"
 AUTEUR  = "Roland"
 
 # ── Couleurs ────────────────────────────────────────────────
@@ -50,7 +50,7 @@ def banniere_session(modele, path_projet):
         f"[cyan]plan[/cyan] • [cyan]task[/cyan] • [cyan]audit[/cyan] • "
         f"[cyan]init[/cyan] • [cyan]git[/cyan] • [cyan]structure[/cyan] • "
         f"[cyan]aide[/cyan] • [cyan]exit[/cyan]",
-        title="[bold cyan][ ROLAX1212 v2.0.1 ][/bold cyan]",
+        title="[bold cyan][ ROLAX1212 v2.0.6 ][/bold cyan]",
         style="cyan"
     ))
 
