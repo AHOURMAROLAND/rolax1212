@@ -1,2 +1,0 @@
-[console_scripts]
-rolax1212 = rolax1212.main:main
